@@ -118,6 +118,7 @@ def generate_frequence_aluno_model(frequence_model, alunos_ids):
     frequence_aluno_model = []
     aluno_id_count = 0
 
+    print("Gerando frequencia de alunos...")
     for frequence in frequence_model:
         frequence_id = frequence["id"]
         total_alunos_presentes = frequence["total_alunos_presentes"]
@@ -143,6 +144,7 @@ from random import uniform
 def generate_notas(alunos_ids, disciplinas_ids, turmas_ids, start_year, end_year):
     notas_model = []
 
+    print("Gerando notas...")
     for ano in range(start_year, end_year + 1):
         for semestre in [1, 2]: 
             for aluno_id in alunos_ids:
@@ -165,17 +167,19 @@ def generate_notas(alunos_ids, disciplinas_ids, turmas_ids, start_year, end_year
     return notas_model
 
 
-# Executando as funções para gerar os dados completos
+print("Executando as funções para gerar os dados completos...")
+
 alunos_model = generate_alunos()
 disciplinas_model = generate_disciplinas()
 turmas_model = generate_turmas()
 calendario_model = gerar_calendario(initial_calendar_param, final_calendar_param)
 
-# Datas letivas e lista de feriados
+print("Datas letivas e lista de feriados..")
+
 feriados = [date(2023, 4, 21), date(2023, 5, 1), date(2023, 6, 15), date(2023, 9, 7), date(2023, 10, 12), date(2023, 11, 2), date(2023, 11, 15), date(2023, 12, 25)]
 register_date = generate_register_dates(feriados, date(2023, 2, 1), date.today())
 
-# Gerando frequência e frequência por aluno
+print("Gerando frequência e frequência por aluno..")
 disciplinas_ids = [disciplina["id"] for disciplina in disciplinas_model]
 turmas_ids = [turma["id"] for turma in turmas_model]
 frequence_model = generate_frequence_model(register_date, disciplinas_ids, turmas_ids)
@@ -185,7 +189,7 @@ notas_model = generate_notas(alunos_ids, disciplinas_ids, turmas_ids, 2023, date
 
 ###################################################################################
 
-# Save data in excel
+print("Salvando dados no Excel...")
 
 df_alunos = pd.DataFrame(alunos_model)
 df_disciplinas = pd.DataFrame(disciplinas_model)
@@ -203,3 +207,5 @@ with pd.ExcelWriter("attendance-school-management.xlsx") as writer:
     df_frequence.to_excel(writer, sheet_name='fato_frequencia', index=False)
     df_frequence_aluno.to_excel(writer, sheet_name='dim_frequencia_aluno', index=False)
     df_notas.to_excel(writer, sheet_name='fato_notas', index=False)
+
+print("Operação realizada com sucesso!")
